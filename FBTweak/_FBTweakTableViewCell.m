@@ -61,8 +61,8 @@ typedef NS_ENUM(NSUInteger, _FBTweakTableViewCellMode) {
     _stepper = [[UIStepper alloc] init];
     [_stepper addTarget:self action:@selector(_stepperChanged:) forControlEvents:UIControlEventValueChanged];
     [_accessoryView addSubview:_stepper];
-    
-    self.detailTextLabel.textColor = [UIColor blackColor];
+
+    self.detailTextLabel.textColor = [self.class detailTextLabelColor];
   }
 
   return self;
@@ -359,6 +359,24 @@ typedef NS_ENUM(NSUInteger, _FBTweakTableViewCellMode) {
   } else if (_mode == _FBTweakTableViewCellModeColor) {
     [self.imageView setImage:_FBCreateColorCellsThumbnail(value, CGSizeMake(30, 30))];
   }
+}
+
+# pragma mark - color
+
++ (UIColor *)detailTextLabelColor {
+  if (@available(iOS 13.0, *)) {
+    UIColor *dynamicColor = [UIColor colorWithDynamicProvider:^UIColor * _Nonnull(UITraitCollection * _Nonnull traitCollection) {
+      if (traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark) {
+        return UIColor.whiteColor;
+      } else {
+        return UIColor.blackColor;
+      }
+    }];
+
+    return dynamicColor;
+  }
+
+  return UIColor.blackColor;
 }
 
 @end
